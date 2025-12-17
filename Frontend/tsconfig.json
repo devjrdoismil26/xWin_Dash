@@ -1,0 +1,68 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "useDefineForClassFields": true,
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting - Phase 3: STRICT MODE ENABLED */
+    "strict": true,
+    
+    /* Unused code detection */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    
+    /* JavaScript support */
+    "allowJs": true,
+    "checkJs": false,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/shared/components/ui/*": ["./src/shared/components/ui/*"],
+      "@/shared/components/*": ["./src/shared/components/*"],
+      "@/layouts/*": ["./src/layouts/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/store/*": ["./store/*"],
+      "@test-utils/*": ["./src/test-utils/*"]
+    },
+
+    /* Type checking enhancements */
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*",
+    "store/**/*",
+    "vite.config.js",
+    "vite-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "scripts",
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/__tests__/**/*"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

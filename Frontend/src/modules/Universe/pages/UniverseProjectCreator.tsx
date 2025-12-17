@@ -1,0 +1,330 @@
+/**
+ * Página de Criador de Projetos Universe - Projects
+ *
+ * @description
+ * Página para criação de novos projetos Universe usando templates ou configuração customizada.
+ * Permite escolher templates, configurar settings e criar projetos com IA, analytics e colaboração.
+ *
+ * @module modules/Projects/Universe/pages/UniverseProjectCreator
+ * @since 1.0.0
+ */
+
+import React, { useState } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
+
+/**
+ * Props do componente UniverseProjectCreator
+ *
+ * @interface UniverseProjectCreatorProps
+ * @property {any} [auth] - Dados de autenticação (opcional)
+ */
+interface UniverseProjectCreatorProps {
+  auth?: string;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: (e: any) => void;
+  onChange?: (e: any) => void; }
+
+interface ProjectTemplate {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  blocks: number;
+  features: string[]; }
+
+/**
+ * Componente UniverseProjectCreator
+ *
+ * @description
+ * Renderiza página de criador de projetos Universe com templates e configurações.
+ * Permite criar projetos usando templates pré-configurados ou configuração customizada.
+ *
+ * @param {UniverseProjectCreatorProps} props - Props do componente
+ * @returns {JSX.Element} Página de criador de projetos Universe
+ */
+const UniverseProjectCreator: React.FC<UniverseProjectCreatorProps> = ({ auth    }) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  const [projectType, setProjectType] = useState<'template' | 'custom'>('template');
+
+  const { data, setData, post, processing, errors } = useForm({
+    name: '',
+    description: '',
+    template: '',
+    type: 'template',
+    settings: {
+      enableAI: true,
+      enableAnalytics: true,
+      enableCollaboration: true,
+      enableVersioning: true
+    } );
+
+  const templates: ProjectTemplate[] = [
+    {
+      id: 'ecommerce',
+      name: 'E-commerce Platform',
+      description: 'Plataforma completa de e-commerce com integração de pagamentos',
+      icon: '🛒',
+      color: 'bg-blue-500',
+      blocks: 24,
+      features: ['Payment Gateway', 'Inventory Management', 'Order Tracking', 'Analytics']
+    },
+    {
+      id: 'marketing',
+      name: 'Marketing Automation',
+      description: 'Automação de marketing com campanhas e segmentação',
+      icon: '📧',
+      color: 'bg-green-500',
+      blocks: 18,
+      features: ['Email Campaigns', 'Lead Scoring', 'A/B Testing', 'CRM Integration']
+    },
+    {
+      id: 'analytics',
+      name: 'Data Analytics Hub',
+      description: 'Hub de análise de dados com dashboards interativos',
+      icon: '📊',
+      color: 'bg-purple-500',
+      blocks: 32,
+      features: ['Real-time Analytics', 'Data Visualization', 'Machine Learning', 'Reports']
+    },
+    {
+      id: 'workflow',
+      name: 'Workflow Management',
+      description: 'Gerenciamento de fluxos de trabalho e processos',
+      icon: '🔄',
+      color: 'bg-orange-500',
+      blocks: 20,
+      features: ['Process Automation', 'Task Management', 'Approval Workflows', 'Notifications']
+    },
+    {
+      id: 'ai-lab',
+      name: 'AI Laboratory',
+      description: 'Laboratório de inteligência artificial e machine learning',
+      icon: '🤖',
+      color: 'bg-red-500',
+      blocks: 28,
+      features: ['Model Training', 'Data Processing', 'AI Models', 'API Integration']
+    },
+    {
+      id: 'custom',
+      name: 'Projeto Personalizado',
+      description: 'Crie seu projeto do zero com blocos personalizados',
+      icon: '⚙️',
+      color: 'bg-gray-500',
+      blocks: 0,
+      features: ['Custom Blocks', 'Flexible Architecture', 'Full Control']
+    }
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    post('/projects/universe/create', {
+      onSuccess: () => {
+        // Redirect to interface after creation
+        window.location.href = '/projects/universe/interface';
+      } );};
+
+  return (
+            <div className=" ">$2</div><Head title="Criar Projeto Universe - xWin Dash" / />
+      <div className="{/* Header */}">$2</div>
+        <div className=" ">$2</div><h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4" />
+            🚀 Criar Projeto Universe
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400" />
+            Escolha um template ou crie seu projeto personalizado
+          </p>
+        </div>
+
+        {/* Project Type Selection */}
+        <div className=" ">$2</div><h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6" />
+            📋 Tipo de Projeto
+          </h2>
+          
+          <div className=" ">$2</div><button
+              onClick={ () => setProjectType('template') }
+              className={`p-4 rounded-lg border-2 transition-colors ${
+                projectType === 'template'
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              } `}
+  >
+              <div className=" ">$2</div><div className="text-3xl mb-2">📋</div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Template</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400" />
+                  Use um template pré-configurado
+                </p></div></button>
+            
+            <button
+              onClick={ () => setProjectType('custom') }
+              className={`p-4 rounded-lg border-2 transition-colors ${
+                projectType === 'custom'
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              } `}
+  >
+              <div className=" ">$2</div><div className="text-3xl mb-2">⚙️</div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Personalizado</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400" />
+                  Crie seu projeto do zero
+                </p></div></button>
+          </div>
+
+        {/* Templates Grid */}
+        {projectType === 'template' && (
+          <div className=" ">$2</div><h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6" />
+              🎨 Escolha um Template
+            </h2>
+            
+            <div className="{(templates || []).map((template: unknown) => (">$2</div>
+                <div
+                  key={ template.id }
+                  onClick={ () => setSelectedTemplate(template.id) }
+                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                    selectedTemplate === template.id
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md'
+                  } `}
+  >
+                  <div className=" ">$2</div><div className="text-4xl mb-2">{template.icon}</div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2" />
+                      {template.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3" />
+                      {template.description}
+                    </p>
+                    <div className="{template.blocks} blocos">$2</div>
+                    </div>
+                  
+                  <div className="{(template.features || []).map((feature: unknown, index: unknown) => (">$2</div>
+                      <div key={index} className="text-xs text-gray-600 dark:text-gray-400">
+          • 
+        </div>{feature}
+                      </div>
+                    ))}
+                  </div>
+              ))}
+            </div>
+        )}
+
+        {/* Project Form */}
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6" />
+            📝 Detalhes do Projeto
+          </h2>
+          
+          <div className=" ">$2</div><div>
+           
+        </div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" />
+                Nome do Projeto
+              </label>
+              <input
+                type="text"
+                value={ data.name }
+                onChange={ (e: unknown) => setData('name', e.target.value) }
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="Digite o nome do projeto"
+                required />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
+            
+            <div>
+           
+        </div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" />
+                Template Selecionado
+              </label>
+              <input
+                type="text"
+                value={ selectedTemplate || '' }
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                placeholder="Selecione um template"
+              / /></div><div className=" ">$2</div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" />
+              Descrição
+            </label>
+            <textarea
+              value={ data.description }
+              onChange={ (e: unknown) => setData('description', e.target.value) }
+              rows={ 3 }
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              placeholder="Descreva o propósito do projeto" />
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            )}
+          </div>
+
+          {/* Settings */}
+          <div className=" ">$2</div><h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4" />
+              ⚙️ Configurações
+            </h3>
+            
+            <div className=" ">$2</div><label className="flex items-center" />
+                <input
+                  type="checkbox"
+                  checked={ data.settings.enableAI }
+                  onChange={(e: unknown) => setData('settings', { ...data.settings, enableAI: e.target.checked })}
+                  className="mr-3" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">🤖 Inteligência Artificial</span></label><label className="flex items-center" />
+                <input
+                  type="checkbox"
+                  checked={ data.settings.enableAnalytics }
+                  onChange={(e: unknown) => setData('settings', { ...data.settings, enableAnalytics: e.target.checked })}
+                  className="mr-3" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">📊 Analytics</span></label><label className="flex items-center" />
+                <input
+                  type="checkbox"
+                  checked={ data.settings.enableCollaboration }
+                  onChange={(e: unknown) => setData('settings', { ...data.settings, enableCollaboration: e.target.checked })}
+                  className="mr-3" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">👥 Colaboração</span></label><label className="flex items-center" />
+                <input
+                  type="checkbox"
+                  checked={ data.settings.enableVersioning }
+                  onChange={(e: unknown) => setData('settings', { ...data.settings, enableVersioning: e.target.checked })}
+                  className="mr-3" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">📝 Versionamento</span></label></div>
+
+          {/* Actions */}
+          <div className=" ">$2</div><button
+              type="submit"
+              disabled={ processing || !selectedTemplate }
+              className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors" />
+              {processing ? 'Criando...' : '🚀 Criar Projeto'}
+            </button>
+            
+            <Link
+              href="/projects/universe"
+              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors" />
+              Cancelar
+            </Link></div></form>
+
+        {/* Eye */}
+        {selectedTemplate && (
+          <div className=" ">$2</div><h3 className="text-xl font-semibold mb-4" />
+              👀 Eye do Projeto
+            </h3>
+            <div className=" ">$2</div><div>
+           
+        </div><h4 className="font-medium mb-2">Informações Básicas</h4>
+                <ul className="text-sm space-y-1" />
+                  <li>• Nome: {data.name || 'Nome do projeto'}</li>
+                  <li>• Template: {templates.find(t => t.id === selectedTemplate)?.name}</li>
+                  <li>• Blocos: {templates.find(t => t.id === selectedTemplate)?.blocks}</li></ul></div>
+              <div>
+           
+        </div><h4 className="font-medium mb-2">Configurações Ativas</h4>
+                <ul className="text-sm space-y-1" />
+                  {data.settings.enableAI && <li>• 🤖 IA Habilitada</li>}
+                  {data.settings.enableAnalytics && <li>• 📊 Analytics Ativo</li>}
+                  {data.settings.enableCollaboration && <li>• 👥 Colaboração</li>}
+                  {data.settings.enableVersioning && <li>• 📝 Versionamento</li>}
+                </ul></div></div>
+        )}
+      </div>);};
+
+export default UniverseProjectCreator;

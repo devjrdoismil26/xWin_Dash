@@ -1,0 +1,7 @@
+<?php declare(strict_types = 1);
+
+// variadic-method-App\Domains\Workflows\Events\WorkflowStarted-__construct-/root/projetos/xWin_Dash/Backend/app/Domains/Workflows/Events/WorkflowStarted.php
+return \PHPStan\Cache\CacheItem::__set_state(array(
+   'variableKey' => '1764955892-v4',
+   'data' => false,
+));

@@ -1,0 +1,225 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # BACKEND - Laravel API
+  # ============================================================================
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.php-fpm
+    container_name: xwin_backend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./Backend:/var/www
+      - ./Backend/storage:/var/www/storage
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-xwin_dash}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - QUEUE_CONNECTION=redis
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - xwin_network
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # ============================================================================
+  # FRONTEND - React SPA
+  # ============================================================================
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: xwin_frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_APP_NAME=xWin_Dash
+      - VITE_APP_ENV=production
+    ports:
+      - "5173:5173"
+    networks:
+      - xwin_network
+    command: npm run dev -- --host
+
+  # ============================================================================
+  # PYLAB - AI Services
+  # ============================================================================
+  pylab:
+    build:
+      context: ./PyLab
+      dockerfile: Dockerfile
+    container_name: xwin_pylab
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./PyLab:/app
+      - ./PyLab/output:/app/output
+      - ./PyLab/cache:/app/cache
+    environment:
+      - PYLAB_HOST=0.0.0.0
+      - PYLAB_PORT=8001
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - USE_GPU=false
+      - CUDA_VISIBLE_DEVICES=-1
+    ports:
+      - "8001:8001"
+    networks:
+      - xwin_network
+    # Descomentar se tiver GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # ============================================================================
+  # POSTGRES - Database
+  # ============================================================================
+  postgres:
+    image: postgres:14-alpine
+    container_name: xwin_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_DATABASE:-xwin_dash}
+      - POSTGRES_USER=${DB_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - xwin_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # REDIS - Cache & Queue
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: xwin_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - xwin_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # NGINX - Reverse Proxy (Opcional)
+  # ============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: xwin_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - xwin_network
+    profiles:
+      - production
+
+  # ============================================================================
+  # QUEUE WORKER - Laravel Queue
+  # ============================================================================
+  queue:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.php-fpm
+    container_name: xwin_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./Backend:/var/www
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - QUEUE_CONNECTION=redis
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - xwin_network
+    command: php artisan queue:work --tries=3 --timeout=300
+
+  # ============================================================================
+  # HORIZON - Queue Dashboard (Opcional)
+  # ============================================================================
+  horizon:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.php-fpm
+    container_name: xwin_horizon
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./Backend:/var/www
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - xwin_network
+    command: php artisan horizon
+    profiles:
+      - production
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  xwin_network:
+    driver: bridge
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

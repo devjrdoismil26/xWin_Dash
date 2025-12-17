@@ -1,0 +1,63 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    tmpDir: tmp
+    treatPhpDocTypesAsCertain: false
+    
+    paths:
+        - app/
+    
+    excludePaths:
+        - app/Console/Kernel.php
+        - app/Http/Kernel.php
+        - app/Domains/Core/Exceptions/Handler.php
+        - app/Domains/Workflows/Services/WorkflowOrchestrationService.php
+        # Temporary exclusions to allow PHPStan bootstrap
+        - app/Providers/ModuleServiceProvider.php
+        - app/Shared/Providers/SharedServiceProvider.php
+        - bootstrap/
+        - database/
+        - tests/
+        - vendor/
+        - storage/
+        - public/
+    
+    # DDD Architecture Support and symbol discovery across app
+    scanDirectories:
+        - app/
+        - database/factories
+    
+    # Enable reporting of unmatched ignore patterns for cleanup
+    reportUnmatchedIgnoredErrors: true
+    
+    ignoreErrors:
+        - { message: "#Negated boolean expression is always false.#", path: app/Domains/Universe/Http/Controllers/UniverseAgentController.php }
+        - { message: "#Negated boolean expression is always false.#", path: app/Domains/Universe/Http/Controllers/UniverseController.php }
+        - { message: "#Negated boolean expression is always false.#", path: app/Domains/Universe/Http/Controllers/UniverseTemplateController.php }
+        # response()->json typing through facades
+        - '#Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json\.#'
+
+        # Note: Eloquent magic methods and Laravel Facades now handled by Larastan extension
+        
+        # DDD Models - Class aliases que criamos
+        - '#Access to property .* on an unknown class App\\Domains\\.*\\Models\\.*#'
+        - '#Call to method .* on an unknown class App\\Domains\\.*\\Models\\.*#'
+        
+        # Unsafe usage of new static - padrão comum em abstracts
+        - '#Unsafe usage of new static.*#'
+        
+        # Note: Laravel Contracts now handled by Larastan extension
+        
+
+        # Laravel Route fluent methods sometimes inferred as array
+        - '#Cannot call method name on array|Illuminate\Routing\Route#'
+        
+        # Deprecations PHP 8.4 - Temporário
+        - '#Deprecated in PHP 8\.4: Parameter .* is implicitly nullable via default value null#'
+        
+        # Workflow Generator types - em processo de correção
+        - '#Yield can be used only with these return types: Generator, Iterator, Traversable, iterable#'
+        - '#Call to static method newly on an unknown class Database\\Factories\\Products\\ProductFactory#'
+        - '#Call to static method newly on an unknown class Database\\Factories\\Core\\TagFactory#'

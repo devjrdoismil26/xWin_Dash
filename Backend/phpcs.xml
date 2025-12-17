@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<ruleset name="XWIN Backend Standards">
+    <description>Padrões de código para o XWIN Backend Enterprise</description>
+
+    <!-- Arquivos e diretórios a serem analisados -->
+    <file>./app/</file>
+
+    <!-- Exclusões -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/bootstrap/cache/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+
+    <!-- Padrões PSR -->
+    <rule ref="PSR1"/>
+    <rule ref="PSR12">
+        <!-- Permitir linhas até 120 caracteres -->
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+
+    <!-- Configurações específicas -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+    <!-- Arrays modernos -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- Espaços em branco -->
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+        <properties>
+            <property name="ignoreBlankLines" value="false"/>
+        </properties>
+    </rule>
+
+    <!-- Convenções Laravel -->
+    <rule ref="Generic.NamingConventions.CamelCapsFunctionName"/>
+    <rule ref="Squiz.Classes.ValidClassName"/>
+
+    <!-- Documentação -->
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingReturn"/>
+    </rule>
+
+    <!-- Configurações de visibilidade -->
+    <rule ref="Squiz.Scope.MethodScope"/>
+    <rule ref="Squiz.Scope.MemberVarScope"/>
+
+    <!-- Configurações específicas para Laravel -->
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    
+    <!-- Configurações de arquivo -->
+    <rule ref="Generic.Files.ByteOrderMark"/>
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+
+    <!-- Permitir algumas exceções para Laravel -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <!-- Permitir métodos mágicos -->
+        <exclude-pattern>*/__*</exclude-pattern>
+    </rule>
+</ruleset>

@@ -1,0 +1,70 @@
+# Documentação e Markdowns
+*.md
+docs/
+README.md
+
+# Logs
+*.log
+logs/
+storage/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Builds e Dist
+build/
+dist/
+public/build/
+public/hot
+public/storage
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Laravel
+/vendor/
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Database
+*.sqlite
+*.db
+
+# Uploads
+storage/app/public/uploads/

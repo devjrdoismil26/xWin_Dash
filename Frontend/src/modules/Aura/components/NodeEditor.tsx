@@ -1,0 +1,370 @@
+/**
+ * @module NodeEditor
+ * @description Editor de propriedades de nós de fluxo do Aura.
+ * 
+ * Este componente permite editar todas as propriedades de um nó de fluxo,
+ * incluindo tipo, ID, posição e configurações específicas baseadas no tipo
+ * do nó (mensagem, condição, delay, webhook, atribuir, tag, transferir).
+ * Renderiza formulários dinâmicos baseados no tipo selecionado.
+ * 
+ * @example
+ * ```tsx
+ * <NodeEditor
+ *   node={ flowNode }
+ *   onNodeUpdate={ (updatedNode: unknown) =>  }
+ *   onClose={ () =>  }
+ * />
+ * ```
+ * 
+ * @since 1.0.0
+ */
+
+import React, { useState, useEffect } from 'react';
+import Card from '@/shared/components/ui/Card';
+import Button from '@/shared/components/ui/Button';
+import Input from '@/shared/components/ui/Input';
+import InputLabel from '@/shared/components/ui/InputLabel';
+import Textarea from '@/shared/components/ui/Textarea';
+import Select from '@/shared/components/ui/Select';
+import Badge from '@/shared/components/ui/Badge';
+import { NodeEditorProps, AuraFlowNode, AuraNodeType } from '../types/auraTypes';
+import { toast } from 'sonner';
+
+/**
+ * Componente para editar propriedades de um nó
+ * 
+ * @param {NodeEditorProps} props - Propriedades do componente
+ * @returns {JSX.Element} Componente renderizado
+ */
+const NodeEditor: React.FC<NodeEditorProps> = ({ node, 
+  onNodeUpdate, 
+  onClose 
+   }) => {
+  const [formData, setFormData] = useState({
+    id: '',
+    type: 'message' as AuraNodeType,
+    config: {} as Record<string, any>,
+    position: { x: 0, y: 0 } );
+
+  const nodeTypeOptions = [
+    { value: 'message', label: 'Mensagem' },
+    { value: 'condition', label: 'Condição' },
+    { value: 'delay', label: 'Delay' },
+    { value: 'webhook', label: 'Webhook' },
+    { value: 'assign', label: 'Atribuir' },
+    { value: 'tag', label: 'Tag' },
+    { value: 'transfer', label: 'Transferir' }
+  ];
+  useEffect(() => {
+    if (node) {
+      setFormData({
+        id: node.id,
+        type: node.type,
+        config: node.config || {},
+        position: node.position || { x: 0, y: 0 } );
+
+    } , [node]);
+
+  const handleInputChange = (field: keyof typeof formData, value: unknown) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));};
+
+  const handleConfigChange = (key: string, value: unknown) => {
+    setFormData(prev => ({
+      ...prev,
+      config: {
+        ...prev.config,
+        [key]: value
+      } ));};
+
+  const handleSave = () => {
+    if (!formData.id.trim()) {
+      toast.error('ID do nó é obrigatório');
+
+      return;
+    }
+    const updatedNode: AuraFlowNode = {
+      ...node,
+      id: formData.id,
+      type: formData.type,
+      config: formData.config,
+      position: formData.position,
+      connections: node?.connections || []};
+
+    onNodeUpdate?.(updatedNode);
+
+    toast.success('Nó atualizado com sucesso!');};
+
+  const getNodeTypeIcon = (type: AuraNodeType): string => {
+    const icons = {
+      message: '💬',
+      condition: '❓',
+      delay: '⏱️',
+      webhook: '🔗',
+      assign: '📝',
+      tag: '🏷️',
+      transfer: '🔄'};
+
+    return icons[type] || '📦';};
+
+  /**
+   * Renderiza o formulário de configuração específico para o tipo de nó
+   * 
+   * @returns {JSX.Element} Formulário de configuração renderizado
+   */
+  const renderNodeConfig = () => {
+    switch (formData.type) {
+      case 'message':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="message_content">Conteúdo da Mensagem</InputLabel>
+              <Textarea
+                id="message_content"
+                value={ formData.config.content || '' }
+                onChange={ (e: unknown) => handleConfigChange('content', e.target.value) }
+                placeholder="Digite o conteúdo da mensagem..."
+                rows={ 4 } /></div><div>
+           
+        </div><InputLabel htmlFor="message_type">Tipo de Mensagem</InputLabel>
+              <Select
+                id="message_type"
+                value={ formData.config.messageType || 'text' }
+                onChange={ (value: unknown) => handleConfigChange('messageType', value) }
+                options={[
+                  { value: 'text', label: 'Texto' },
+                  { value: 'image', label: 'Imagem' },
+                  { value: 'video', label: 'Vídeo' },
+                  { value: 'audio', label: 'Áudio' }
+                ]} />
+            </div>);
+
+      case 'condition':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="condition_field">Campo</InputLabel>
+              <Input
+                id="condition_field"
+                value={ formData.config.field || '' }
+                onChange={ (e: unknown) => handleConfigChange('field', e.target.value) }
+                placeholder="Ex: user.age, message.content" /></div><div>
+           
+        </div><InputLabel htmlFor="condition_operator">Operador</InputLabel>
+              <Select
+                id="condition_operator"
+                value={ formData.config.operator || 'equals' }
+                onChange={ (value: unknown) => handleConfigChange('operator', value) }
+                options={[
+                  { value: 'equals', label: 'Igual a' },
+                  { value: 'contains', label: 'Contém' },
+                  { value: 'starts_with', label: 'Começa com' },
+                  { value: 'ends_with', label: 'Termina com' },
+                  { value: 'greater_than', label: 'Maior que' },
+                  { value: 'less_than', label: 'Menor que' }
+                ]} /></div><div>
+           
+        </div><InputLabel htmlFor="condition_value">Valor</InputLabel>
+              <Input
+                id="condition_value"
+                value={ formData.config.value || '' }
+                onChange={ (e: unknown) => handleConfigChange('value', e.target.value) }
+                placeholder="Valor para comparação" />
+            </div>);
+
+      case 'delay':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="delay_duration">Duração (segundos)</InputLabel>
+              <Input
+                id="delay_duration"
+                type="number"
+                value={ formData.config.duration || '' }
+                onChange={ (e: unknown) => handleConfigChange('duration', parseInt(e.target.value) || 0) }
+                placeholder="60"
+                min="0" /></div><div>
+           
+        </div><InputLabel htmlFor="delay_unit">Unidade</InputLabel>
+              <Select
+                id="delay_unit"
+                value={ formData.config.unit || 'seconds' }
+                onChange={ (value: unknown) => handleConfigChange('unit', value) }
+                options={[
+                  { value: 'seconds', label: 'Segundos' },
+                  { value: 'minutes', label: 'Minutos' },
+                  { value: 'hours', label: 'Horas' },
+                  { value: 'days', label: 'Dias' }
+                ]} />
+            </div>);
+
+      case 'webhook':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="webhook_url">URL do Webhook</InputLabel>
+              <Input
+                id="webhook_url"
+                value={ formData.config.url || '' }
+                onChange={ (e: unknown) => handleConfigChange('url', e.target.value) }
+                placeholder="https://api.exemplo.com/webhook" /></div><div>
+           
+        </div><InputLabel htmlFor="webhook_method">Método HTTP</InputLabel>
+              <Select
+                id="webhook_method"
+                value={ formData.config.method || 'POST' }
+                onChange={ (value: unknown) => handleConfigChange('method', value) }
+                options={[
+                  { value: 'GET', label: 'GET' },
+                  { value: 'POST', label: 'POST' },
+                  { value: 'PUT', label: 'PUT' },
+                  { value: 'DELETE', label: 'DELETE' }
+                ]} />
+            </div>);
+
+      case 'assign':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="assign_variable">Variável</InputLabel>
+              <Input
+                id="assign_variable"
+                value={ formData.config.variable || '' }
+                onChange={ (e: unknown) => handleConfigChange('variable', e.target.value) }
+                placeholder="Ex: user.name, lead.score" /></div><div>
+           
+        </div><InputLabel htmlFor="assign_value">Valor</InputLabel>
+              <Input
+                id="assign_value"
+                value={ formData.config.value || '' }
+                onChange={ (e: unknown) => handleConfigChange('value', e.target.value) }
+                placeholder="Valor a ser atribuído" />
+            </div>);
+
+      case 'tag':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="tag_name">Nome da Tag</InputLabel>
+              <Input
+                id="tag_name"
+                value={ formData.config.tagName || '' }
+                onChange={ (e: unknown) => handleConfigChange('tagName', e.target.value) }
+                placeholder="Ex: vip, premium, ativo" /></div><div>
+           
+        </div><InputLabel htmlFor="tag_action">Ação</InputLabel>
+              <Select
+                id="tag_action"
+                value={ formData.config.action || 'add' }
+                onChange={ (value: unknown) => handleConfigChange('action', value) }
+                options={[
+                  { value: 'add', label: 'Adicionar' },
+                  { value: 'remove', label: 'Remover' },
+                  { value: 'replace', label: 'Substituir' }
+                ]} />
+            </div>);
+
+      case 'transfer':
+        return (
+                  <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="transfer_destination">Destino</InputLabel>
+              <Input
+                id="transfer_destination"
+                value={ formData.config.destination || '' }
+                onChange={ (e: unknown) => handleConfigChange('destination', e.target.value) }
+                placeholder="Ex: agente@empresa.com, departamento_vendas" /></div><div>
+           
+        </div><InputLabel htmlFor="transfer_message">Mensagem de Transferência</InputLabel>
+              <Textarea
+                id="transfer_message"
+                value={ formData.config.message || '' }
+                onChange={ (e: unknown) => handleConfigChange('message', e.target.value) }
+                placeholder="Mensagem enviada ao transferir..."
+                rows={ 3 } />
+            </div>);
+
+      default:
+        return (
+                  <div className=" ">$2</div><div className="text-2xl mb-2">📦</div>
+            <p>Configurações não disponíveis para este tipo de nó</p>
+          </div>);
+
+    } ;
+
+  return (
+        <>
+      <Card />
+      <Card.Header />
+        <div className=" ">$2</div><Card.Title />
+            Editor de Nó {getNodeTypeIcon(formData.type)}
+          </Card.Title>
+          { onClose && (
+            <Button variant="ghost" size="sm" onClick={onClose } />
+              ✕
+            </Button>
+          )}
+        </div>
+      </Card.Header>
+      <Card.Content className="space-y-6" />
+        {/* Informações Básicas */}
+        <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="node_id">ID do Nó</InputLabel>
+            <Input
+              id="node_id"
+              value={ formData.id }
+              onChange={ (e: unknown) => handleInputChange('id', e.target.value) }
+              placeholder="Ex: node_1, message_start" /></div><div>
+           
+        </div><InputLabel htmlFor="node_type">Tipo de Nó</InputLabel>
+            <Select
+              id="node_type"
+              value={ formData.type }
+              onChange={ (value: unknown) => handleInputChange('type', value as AuraNodeType) }
+              options={ nodeTypeOptions } />
+          </div>
+        {/* Posição */}
+        <div className=" ">$2</div><div>
+           
+        </div><InputLabel htmlFor="position_x">Posição X</InputLabel>
+            <Input
+              id="position_x"
+              type="number"
+              value={ formData.position.x }
+              onChange={(e: unknown) => handleInputChange('position', { 
+                ...formData.position, 
+                x: parseInt(e.target.value) || 0 
+              })} /></div><div>
+           
+        </div><InputLabel htmlFor="position_y">Posição Y</InputLabel>
+            <Input
+              id="position_y"
+              type="number"
+              value={ formData.position.y }
+              onChange={(e: unknown) => handleInputChange('position', { 
+                ...formData.position, 
+                y: parseInt(e.target.value) || 0 
+              })} />
+          </div>
+        {/* Configurações Específicas */}
+        <div>
+           
+        </div><InputLabel>Configurações do Nó</InputLabel>
+          {renderNodeConfig()}
+        </div>
+      </Card.Content>
+      <Card.Footer />
+        <div className="{ onClose && (">$2</div>
+            <Button variant="outline" onClick={onClose } />
+              Cancelar
+            </Button>
+          )}
+          <Button onClick={ handleSave } />
+            Salvar Nó
+          </Button></div></Card.Footer>
+    </Card>);};
+
+export default NodeEditor;

@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Domains\SocialBuffer\Events;
+
+use App\Domains\SocialBuffer\Models\Post;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+/**
+ * Evento disparado quando um novo post é criado no sistema.
+ */
+class PostCreated
+{
+    use Dispatchable;
+    use SerializesModels;
+
+    public Post $post;
+
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+}

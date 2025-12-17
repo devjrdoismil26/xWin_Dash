@@ -1,0 +1,7 @@
+<?php declare(strict_types = 1);
+
+// variadic-method-Symfony\Component\HttpFoundation\File\File-getContent-/root/projetos/xWin_Dash/Backend/vendor/composer/../symfony/http-foundation/File/File.php
+return \PHPStan\Cache\CacheItem::__set_state(array(
+   'variableKey' => '1752135254-v4',
+   'data' => false,
+));

@@ -1,0 +1,155 @@
+// =========================================
+// PRODUCTS HEADER - HEADER E NAVEGAÇÃO
+// =========================================
+// Header do módulo Products
+// Máximo: 150 linhas
+
+import React from 'react';
+import { Button } from '@/shared/components/ui/Button';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Tooltip } from '@/shared/components/ui/Tooltip';
+import { Plus, LayoutGrid, List, Settings, RotateCcw, Cog } from 'lucide-react';
+
+interface ProductsHeaderProps {
+  title: string;
+  subtitle?: string;
+  breadcrumbs?: Array<{ label: string;
+  href?: string
+children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: (e: any) => void;
+  onChange?: (e: any) => void; }>;
+  actions?: Array<{
+    label: string;
+    onClick?: (e: any) => void;
+    variant?: 'primary' | 'secondary' | 'danger';
+    icon?: React.ReactNode;
+    disabled?: boolean;
+  }>;
+  viewMode?: 'grid' | 'list';
+  onViewModeChange??: (e: any) => void;
+  onRefresh???: (e: any) => void;
+  loading?: boolean;
+  className?: string;
+}
+
+export const ProductsHeader: React.FC<ProductsHeaderProps> = ({ title,
+  subtitle,
+  breadcrumbs = [] as unknown[],
+  actions = [] as unknown[],
+  viewMode = 'grid',
+  onViewModeChange,
+  onRefresh,
+  loading = false,
+  className = ''
+   }) => {
+  // =========================================
+  // AÇÕES PADRÃO
+  // =========================================
+
+  const defaultActions = [
+    {
+      label: 'Novo Produto',
+      onClick: () => {
+        // Navegar para página de criação
+        window.location.href = '/products/create';
+      },
+      variant: 'primary' as const,
+      icon: <Plus className="w-4 h-4" />
+  },
+    {
+      label: 'Configurações',
+      onClick: () => {
+        // Abrir configurações
+      },
+      variant: 'secondary' as const,
+      icon: <Cog className="w-4 h-4" />
+  }
+  ];
+
+  const allActions = [...defaultActions, ...actions];
+
+  // =========================================
+  // HANDLERS
+  // =========================================
+
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    onViewModeChange?.(mode);};
+
+  const handleRefresh = () => {
+    onRefresh?.();};
+
+  // =========================================
+  // RENDERIZAÇÃO
+  // =========================================
+
+  return (
+        <>
+      <div className={`products-header ${className} `}>
+      </div>{/* Breadcrumbs */}
+      {breadcrumbs.length > 0 && (
+        <Breadcrumbs items={breadcrumbs} className="mb-4" />
+      )}
+
+      {/* Header principal */}
+      <div className=" ">$2</div><div className=" ">$2</div><h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          {subtitle && (
+            <p className="text-gray-600 mt-1">{subtitle}</p>
+          )}
+        </div>
+
+        {/* Ações */}
+        <div className="{/* Controles de visualização */}">$2</div>
+          <div className=" ">$2</div><Tooltip content="Visualização em grade" />
+              <button
+                onClick={ () => handleViewModeChange('grid') }
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                } `}
+  >
+                <LayoutGrid className="w-4 h-4" /></button></Tooltip>
+            <Tooltip content="Visualização em lista" />
+              <button
+                onClick={ () => handleViewModeChange('list') }
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === 'list'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                } `}
+  >
+                <List className="w-4 h-4" /></button></Tooltip>
+          </div>
+
+          {/* Botão de refresh */}
+          {onRefresh && (
+            <Tooltip content="Atualizar" />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={ handleRefresh }
+                disabled={ loading }
+                className="p-2" />
+                <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''} `} / /></Button></Tooltip>
+          )}
+
+          {/* Ações personalizadas */}
+          {(allActions || []).map((action: unknown, index: unknown) => (
+            <Button
+              key={ index }
+              variant={ action.variant || 'secondary' }
+              size="sm"
+              onClick={ action.onClick }
+              disabled={ action.disabled || loading }
+              className="flex items-center space-x-2" />
+              {action.icon}
+              <span>{action.label}</span>
+      </Button>
+    </>
+  ))}
+        </div>
+    </div>);};
+
+export default ProductsHeader;

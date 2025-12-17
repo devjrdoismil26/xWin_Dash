@@ -1,0 +1,428 @@
+/* Sistema de Estilos Unificado - xWin Dash */
+
+/* ===== TAILWIND CSS ===== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== ESTILOS CUSTOMIZADOS PARA AUTENTICAÇÃO ===== */
+/* Mantidos por serem específicos e usados em componentes de auth */
+.auth-container {
+  @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 p-4;
+}
+
+.auth-card {
+  @apply bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-200 dark:border-gray-700;
+}
+
+.auth-title {
+  @apply text-3xl font-bold text-gray-900 dark:text-white text-center mb-8;
+}
+
+.auth-subtitle {
+  @apply text-gray-600 dark:text-gray-400 text-center mb-6 text-sm;
+}
+
+.auth-form {
+  @apply flex flex-col gap-6;
+}
+
+.form-group {
+  @apply flex flex-col gap-2;
+}
+
+.form-label {
+  @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
+}
+
+.form-input {
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg 
+         bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base
+         transition-all duration-200 ease-in-out
+         focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+         focus:scale-[1.02]
+         placeholder:text-gray-400 dark:placeholder:text-gray-500;
+}
+
+.form-input::placeholder {
+  @apply text-gray-400 dark:text-gray-500;
+}
+
+.form-button {
+  @apply w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-indigo-600 
+         text-white font-semibold rounded-lg border-none cursor-pointer
+         transition-all duration-200 ease-in-out text-base
+         hover:from-primary-700 hover:to-indigo-700 hover:scale-[1.02]
+         active:scale-[0.98]
+         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+}
+
+.form-error {
+  @apply text-red-600 dark:text-red-400 text-sm mt-1;
+}
+
+.form-link {
+  @apply text-primary-600 dark:text-primary-400 font-medium no-underline
+         transition-colors duration-200 ease-in-out
+         hover:text-primary-700 dark:hover:text-primary-300;
+}
+
+/* ===== VARIÁVEIS CSS CONSOLIDADAS ===== */
+:root {
+  /* Cores Primárias */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+
+  /* Cores Secundárias */
+  --secondary-50: #f8fafc;
+  --secondary-100: #f1f5f9;
+  --secondary-200: #e2e8f0;
+  --secondary-300: #cbd5e1;
+  --secondary-400: #94a3b8;
+  --secondary-500: #64748b;
+  --secondary-600: #475569;
+  --secondary-700: #334155;
+  --secondary-800: #1e293b;
+  --secondary-900: #0f172a;
+
+  /* Cores de Status */
+  --success-50: #f0fdf4;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --warning-50: #fffbeb;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --error-50: #fef2f2;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+
+  /* Cores do Sistema (Claude/macOS) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.9);
+  
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6a6a6a;
+  --text-disabled: #9a9a9a;
+  
+  --border-primary: #e0e0e0;
+  --border-secondary: #d0d0d0;
+  --border-focus: #ff6b35;
+  
+  --accent-primary: #ff6b35;
+  --accent-secondary: #ff8c5a;
+  --accent-hover: #e55a2b;
+  --accent-active: #cc4a1f;
+  
+  --success: #4caf50;
+  --warning: #ff9800;
+  --error: #f44336;
+  --info: #2196f3;
+
+  /* Espaçamentos */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Bordas */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transições */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* Blur Effects */
+  --blur-sm: blur(4px);
+  --blur-md: blur(8px);
+  --blur-lg: blur(16px);
+}
+
+/* ===== RESET E BASE ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @apply font-sans m-0 p-0 bg-secondary-50 text-secondary-900 leading-6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== TEMA ESCURO ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --secondary-50: #0f172a;
+    --secondary-100: #1e293b;
+    --secondary-200: #334155;
+    --secondary-300: #475569;
+    --secondary-400: #64748b;
+    --secondary-500: #94a3b8;
+    --secondary-600: #cbd5e1;
+    --secondary-700: #e2e8f0;
+    --secondary-800: #f1f5f9;
+    --secondary-900: #f8fafc;
+
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --bg-tertiary: #3a3a3a;
+    --bg-elevated: #2d2d2d;
+    --bg-overlay: rgba(0, 0, 0, 0.8);
+    
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-tertiary: #808080;
+    --text-disabled: #4d4d4d;
+    
+    --border-primary: #404040;
+    --border-secondary: #333333;
+    --border-focus: #ff6b35;
+  }
+  
+  body {
+    @apply bg-secondary-50 text-secondary-900;
+  }
+}
+
+/* Tema Claro explícito */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.9);
+  
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6a6a6a;
+  --text-disabled: #9a9a9a;
+  
+  --border-primary: #e0e0e0;
+  --border-secondary: #d0d0d0;
+  --border-focus: #ff6b35;
+}
+
+/* Tema Escuro explícito */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #3a3a3a;
+  --bg-elevated: #2d2d2d;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #808080;
+  --text-disabled: #4d4d4d;
+  
+  --border-primary: #404040;
+  --border-secondary: #333333;
+  --border-focus: #ff6b35;
+}
+
+/* ===== CLASSES UTILITÁRIAS (Compatibilidade) ===== */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-tertiary { background-color: var(--bg-tertiary); }
+.bg-elevated { background-color: var(--bg-elevated); }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-disabled { color: var(--text-disabled); }
+
+.border-primary { border-color: var(--border-primary); }
+.border-secondary { border-color: var(--border-secondary); }
+.border-focus { border-color: var(--border-focus); }
+
+.accent-primary { color: var(--accent-primary); }
+.accent-bg { background-color: var(--accent-primary); }
+.accent-border { border-color: var(--accent-primary); }
+
+/* Efeitos de Janela macOS */
+.window-frame {
+  @apply bg-elevated border border-primary rounded-xl shadow-lg backdrop-blur-md transition-all duration-200;
+}
+
+.window-frame:hover {
+  @apply shadow-xl -translate-y-0.5;
+}
+
+.window-header {
+  @apply bg-gradient-to-b from-secondary to-tertiary border-b border-primary rounded-t-xl px-4 py-3 flex items-center gap-2;
+}
+
+.window-controls {
+  @apply flex gap-2;
+}
+
+.window-control {
+  @apply w-3 h-3 rounded-full border-none cursor-pointer transition-all duration-150 hover:scale-110 hover:opacity-80;
+}
+
+.window-control.close { @apply bg-[#ff5f57]; }
+.window-control.minimize { @apply bg-[#ffbd2e]; }
+.window-control.maximize { @apply bg-[#28ca42]; }
+
+/* ===== TEMA DO CALENDÁRIO ===== */
+.rbc-calendar {
+  @apply font-sans border border-primary rounded-lg bg-bg-primary;
+}
+
+.rbc-header {
+  @apply bg-secondary text-text-secondary py-3 px-2 border-b border-primary;
+}
+
+.rbc-event {
+  @apply bg-accent-primary text-white rounded px-2 py-1;
+}
+
+.rbc-today {
+  @apply bg-tertiary;
+}
+
+.rbc-off-range-bg {
+  @apply bg-secondary;
+}
+
+.rbc-toolbar {
+  @apply bg-elevated border-b border-primary p-4;
+}
+
+.rbc-toolbar button {
+  @apply bg-secondary text-text-primary border border-primary rounded-md px-4 py-2 transition-all duration-150;
+}
+
+.rbc-toolbar button:hover {
+  @apply bg-tertiary border-secondary;
+}
+
+.rbc-toolbar button.rbc-active {
+  @apply bg-accent-primary text-white border-accent-primary;
+}
+
+/* ===== TEMA DO REACT FLOW ===== */
+.react-flow__pane {
+  @apply bg-bg-primary;
+}
+
+.react-flow__node {
+  @apply border-primary bg-elevated text-text-primary shadow-sm;
+}
+
+.react-flow__node.selected {
+  @apply border-accent-primary;
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}
+
+.react-flow__edge-path {
+  stroke: var(--text-secondary);
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--accent-primary);
+}
+
+.react-flow__handle {
+  background-color: var(--accent-primary);
+  border: 1px solid white;
+}
+
+.react-flow__controls {
+  @apply bg-elevated border border-primary rounded-lg;
+}
+
+.react-flow__controls-button {
+  @apply text-text-primary border-b border-primary;
+}
+
+.react-flow__controls-button:hover {
+  @apply bg-secondary;
+}
+
+.react-flow__minimap {
+  @apply bg-elevated border border-primary rounded-lg;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--bg-secondary);
+  opacity: 0.7;
+}
+
+.react-flow__minimap-node {
+  fill: var(--accent-primary);
+  stroke: white;
+}
+
+/* ===== SCROLLBAR CUSTOMIZADA ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary-300 rounded-md;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary-400;
+}
+
+/* ===== ANIMAÇÕES (Migradas para Tailwind, mantidas para compatibilidade) ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

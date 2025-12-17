@@ -1,0 +1,6 @@
+
+In AIProviderManager.php line 378:
+                                                                         
+  syntax error, unexpected single-quoted string "models", expecting "]"  
+                                                                         
+
