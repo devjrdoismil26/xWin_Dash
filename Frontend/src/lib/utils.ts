@@ -106,9 +106,11 @@ export function formatValue(
 
     default:
       return String(value);
+  }
+}
 
-  } /**
- * Trunca um texto at? um comprimento m?ximo
+/**
+ * Trunca um texto até um comprimento máximo
  *
  * @description
  * Reduz o texto at? o comprimento especificado e adiciona "..."

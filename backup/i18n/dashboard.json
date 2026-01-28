@@ -1,0 +1,20 @@
+{
+    "loading": "Carregando dashboard...",
+    "cards": {
+        "metrics": "Resumo",
+        "leadsTrend": "Leads por Período",
+        "scoreDistribution": "Distribuição de Score",
+        "segmentGrowth": "Crescimento de Segmentos",
+        "projects": "Movimentação de Projetos",
+        "activities": "Atividades Recentes",
+        "tools": "Ferramentas Rápidas"
+    },
+    "tools": {
+        "createLead": "Criar Lead",
+        "newProject": "Novo Projeto",
+        "startWorkflow": "Iniciar Workflow"
+    },
+    "notifications": {
+        "none": "Nenhuma notificação no momento."
+    }
+}

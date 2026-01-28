@@ -1,200 +1,121 @@
-import { useState, useEffect, useCallback } from 'react';
-import { adsService } from '../services';
+import { useState, useCallback, useEffect } from 'react';
+import { adsService } from '../services/adsService';
 
-export const useADSToolRefactored = () => {
-  const [campaigns, setCampaigns] = useState<unknown[]>([]);
+interface Campaign {
+  id: string;
+  name: string;
+  status: string;
+  budget: number;
+  platform: string;
+}
 
-  const [accounts, setAccounts] = useState<unknown[]>([]);
+interface Filters {
+  search?: string;
+  status?: string;
+  platform?: string;
+}
 
-  const [metrics, setMetrics] = useState({
-    total_campaigns: 0,
-    active_campaigns: 0,
-    total_spend: 0,
-    total_conversions: 0,
-  });
-
-  const [analytics, setAnalytics] = useState<any>(null);
-
+export const useADSToolRefactored = (filters: Filters = {}) => {
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<any>({});
-
-  const fetchCampaigns = useCallback(async (customFilters?: string) => {
+  const getCampaigns = useCallback(async (customFilters?: Filters) => {
     setLoading(true);
-
     setError(null);
 
     try {
       const response = await adsService.campaigns.getCampaigns(customFilters || filters);
 
-      if (response.success && (response as any).data) {
-        setCampaigns(Array.isArray(response.data) ? (response as any).data : [response.data]);
-
-      } catch (err: unknown) {
-      setError(err.message);
-
+      if (response.success && response.data) {
+        setCampaigns(Array.isArray(response.data) ? response.data : [response.data]);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
-
-    } , [filters]);
+    }
+  }, [filters]);
 
   const getCampaign = useCallback(async (id: string) => {
     setLoading(true);
 
     try {
       const response = await adsService.campaigns.getCampaignById(id);
-
-      return (response as any).success ? (response as any).data : null;
+      return response.success ? response.data : null;
     } catch (err: unknown) {
-      setError(err.message);
-
+      setError(err instanceof Error ? err.message : 'Unknown error');
       return null;
     } finally {
       setLoading(false);
+    }
+  }, []);
 
-    } , []);
+  const createCampaign = useCallback(async (data: Partial<Campaign>) => {
+    setLoading(true);
 
-  const fetchAccounts = useCallback(async () => {
-    try {
-      const response = await adsService.accounts.getAccounts();
-
-      if (response.success && (response as any).data) {
-        setAccounts(Array.isArray(response.data) ? (response as any).data : [response.data]);
-
-      } catch (err: unknown) {
-      console.error('Error fetching accounts:', err);
-
-    } , []);
-
-  const fetchMetrics = useCallback(async () => {
-    try {
-      const response = await adsService.getDashboard();
-
-      if (response.success && (response as any).data) {
-        const data = (response as any).data as any;
-        setMetrics({
-          total_campaigns: (data as any).total_campaigns || 0,
-          active_campaigns: (data as any).active_campaigns || 0,
-          total_spend: (data as any).total_spend || 0,
-          total_conversions: (data as any).total_conversions || 0,
-        });
-
-      } catch (err: unknown) {
-      console.error('Error fetching metrics:', err);
-
-    } , []);
-
-  const fetchAnalytics = useCallback(async () => {
-    try {
-      const response = await adsService.analytics.getAnalyticsSummary();
-
-      if (response.success) {
-        setAnalytics(response.data);
-
-      } catch (err: unknown) {
-      console.error('Error fetching analytics:', err);
-
-    } , []);
-
-  const createCampaign = useCallback(async (data: unknown) => {
     try {
       const response = await adsService.campaigns.createCampaign(data);
-
       if (response.success) {
-        await fetchCampaigns();
-
-        await fetchMetrics();
-
+        await getCampaigns();
       }
-      return (response as any).success;
+      return response;
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      return { success: false, error: err };
+    } finally {
+      setLoading(false);
+    }
+  }, [getCampaigns]);
 
-      return false;
-    } , [fetchCampaigns, fetchMetrics]);
+  const updateCampaign = useCallback(async (id: string, data: Partial<Campaign>) => {
+    setLoading(true);
 
-  const updateCampaign = useCallback(async (id: string, data: unknown) => {
     try {
       const response = await adsService.campaigns.updateCampaign(id, data);
-
       if (response.success) {
-        await fetchCampaigns();
-
+        await getCampaigns();
       }
-      return (response as any).success;
+      return response;
     } catch (err: unknown) {
-      setError(err.message);
-
-      return false;
-    } , [fetchCampaigns]);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      return { success: false, error: err };
+    } finally {
+      setLoading(false);
+    }
+  }, [getCampaigns]);
 
   const deleteCampaign = useCallback(async (id: string) => {
+    setLoading(true);
+
     try {
       const response = await adsService.campaigns.deleteCampaign(id);
-
       if (response.success) {
-        await fetchCampaigns();
-
-        await fetchMetrics();
-
+        await getCampaigns();
       }
-      return (response as any).success;
+      return response;
     } catch (err: unknown) {
-      setError(err.message);
-
-      return false;
-    } , [fetchCampaigns, fetchMetrics]);
-
-  const toggleCampaignStatus = useCallback(async (id: string) => {
-    try {
-      const campaign = campaigns.find(c => c.id === id);
-
-      if (!campaign) return false;
-
-      const newStatus = campaign.status === 'active' ? 'paused' : 'active';
-      return await updateCampaign(id, { status: newStatus });
-
-    } catch (err: unknown) {
-      setError(err.message);
-
-      return false;
-    } , [campaigns, updateCampaign]);
-
-  const refreshCampaigns = useCallback(() => {
-    fetchCampaigns();
-
-    fetchMetrics();
-
-  }, [fetchCampaigns, fetchMetrics]);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      return { success: false, error: err };
+    } finally {
+      setLoading(false);
+    }
+  }, [getCampaigns]);
 
   useEffect(() => {
-    fetchCampaigns();
-
-    fetchAccounts();
-
-    fetchMetrics();
-
-  }, []);
+    getCampaigns();
+  }, [getCampaigns]);
 
   return {
     campaigns,
-    accounts,
-    metrics,
-    analytics,
     loading,
     error,
-    filters,
-    setFilters,
-    fetchCampaigns,
+    getCampaigns,
     getCampaign,
-    fetchAccounts,
-    fetchMetrics,
-    fetchAnalytics,
     createCampaign,
     updateCampaign,
     deleteCampaign,
-    toggleCampaignStatus,
-    refreshCampaigns,};
+  };
 };
+
+export default useADSToolRefactored;

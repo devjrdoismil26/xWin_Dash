@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { usersApiService } from '../services/usersApiService';
+import { userApiService } from '../services/userApiService';
 import { User, UserFilters, UserBulkUpdate, UserBulkDelete, UserImport } from '../types/user.types';
 
 export interface CreateUserData {
@@ -33,7 +33,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.getUsers(filters);
+      const response = await userApiService.getUsers(filters);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch users');
@@ -59,7 +59,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.createUser(data);
+      const response = await userApiService.createUser(data);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to create user');
@@ -86,7 +86,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.updateUser(data.id.toString(), data);
+      const response = await userApiService.updateUser(data.id.toString(), data);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to update user');
@@ -113,7 +113,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.deleteUser(id.toString());
+      const response = await userApiService.deleteUser(id.toString());
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to delete user');
@@ -138,7 +138,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.getUserById(id.toString());
+      const response = await userApiService.getUserById(id.toString());
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch user');
@@ -162,7 +162,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.updateUserStatus(id.toString(), status);
+      const response = await userApiService.updateUserStatus(id.toString(), status);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to update user status');
@@ -189,7 +189,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.updateUserRole(id.toString(), role);
+      const response = await userApiService.updateUserRole(id.toString(), role);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to update user role');
@@ -216,7 +216,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.resetUserPassword(id.toString(), newPassword, newPassword);
+      const response = await userApiService.resetUserPassword(id.toString(), newPassword, newPassword);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to reset user password');
@@ -237,7 +237,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.sendVerificationEmail(id.toString());
+      const response = await userApiService.sendVerificationEmail(id.toString());
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to send verification email');
@@ -269,7 +269,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.getUserStats();
+      const response = await userApiService.getUserStats();
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch user statistics');
@@ -293,7 +293,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.searchUsers(query, filters);
+      const response = await userApiService.searchUsers(query, filters);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to search users');
@@ -317,7 +317,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.getUsersByRole(role, filters);
+      const response = await userApiService.getUsersByRole(role, filters);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch users by role');
@@ -341,7 +341,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.getUsersByStatus(status, filters);
+      const response = await userApiService.getUsersByStatus(status, filters);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch users by status');
@@ -370,7 +370,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.bulkUpdateUsers(bulkData);
+      const response = await userApiService.bulkUpdateUsers(bulkData);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to bulk update users');
@@ -402,7 +402,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.bulkDeleteUsers(bulkData);
+      const response = await userApiService.bulkDeleteUsers(bulkData);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to bulk delete users');
@@ -435,7 +435,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.exportUsers(filters);
+      const response = await userApiService.exportUsers(filters);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to export users');
@@ -465,7 +465,7 @@ export const useUsers = () => {
 
       setError(null);
 
-      const response = await usersApiService.importUsers(importData);
+      const response = await userApiService.importUsers(importData);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to import users');

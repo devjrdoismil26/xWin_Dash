@@ -132,11 +132,11 @@ export function getErrorMessage(error: unknown): string {
  */
 export function isAxiosError(error: unknown): error is AxiosErrorResponse {
   return (
-            typeof error === 'object' &&
+    typeof error === 'object' &&
     error !== null &&
     'response' in error &&
-    typeof (error as AxiosErrorResponse).response === 'object');
-
+    typeof (error as AxiosErrorResponse).response === 'object'
+  );
 }
 
 /**

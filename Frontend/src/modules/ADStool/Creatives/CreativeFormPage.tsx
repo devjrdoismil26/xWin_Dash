@@ -27,13 +27,18 @@ children?: React.ReactNode;
   onChange?: (e: any) => void; }>;
   isEditing?: boolean;
 }
-const CreateEdit: React.FC<CreateEditProps> = ({ creative, campaigns = [] as unknown[], isEditing = false    }) => {
+const CreateEdit: React.FC<CreateEditProps> = ({ creative, campaigns = [] as unknown[], isEditing = false }) => {
   const pageTitle = isEditing ? `Editar Criativo: ${creative?.name || ''}` : 'Criar Novo Criativo';
+  
   return (
-        <>
+    <>
       <AuthenticatedLayout />
-      <Head title={pageTitle} / />
-      <PageLayout title={ pageTitle } />
-        <CreativeForm creative={creative} campaigns={campaigns} / /></PageLayout></AuthenticatedLayout>);};
+      <Head title={pageTitle} />
+      <PageLayout title={pageTitle}>
+        <CreativeForm creative={creative} campaigns={campaigns} />
+      </PageLayout>
+    </>
+  );
+};
 
 export default CreateEdit;

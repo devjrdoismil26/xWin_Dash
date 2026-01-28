@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { usersApiService } from '../services/usersApiService';
+import { userApiService } from '../services/userApiService';
 import { userStatsService } from '../services/userStatsService';
 import { User } from '../types/user.types';
 
@@ -33,7 +33,7 @@ export const useUsersData = () => {
 
       try {
         const [usersResponse, statsResponse] = await Promise.all([
-          usersApiService.getUsers({ per_page: 100 }),
+          userApiService.getUsers({ per_page: 100 }),
           userStatsService.getStatistics()
         ]);
 

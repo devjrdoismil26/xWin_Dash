@@ -1,8 +1,22 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Users, Send, Calendar, Hash, Link as Link, Image, BarChart3, Eye, Heart, MessageCircle, Share2 } from 'lucide-react';
-import Card from '@/shared/components/ui/Card';
-import { AnimatedCounter, Animated } from '@/shared/components/ui/AdvancedAnimations';
-import { Progress, CircularProgress } from '@/shared/components/ui/AdvancedProgress';
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Users, 
+  Send, 
+  Calendar, 
+  Hash,
+  Link as Link,
+  Image,
+  BarChart3,
+  Eye,
+  Heart,
+  MessageCircle,
+  Share2
+} from 'lucide-react';
+import Card from '@/components/ui/Card';
+import { AnimatedCounter, Animated } from '@/components/ui/AdvancedAnimations';
+import { ProgressBar, CircularProgress } from '@/components/ui/ProgressBar';
 import { useAnalyticsStore } from '../hooks/useAnalyticsStore';
 import { useAccountsStore } from '../hooks/useAccountsStore';
 import { usePostsStore } from '../hooks/usePostsStore';
@@ -11,10 +25,7 @@ import { useSchedulesStore } from '../hooks/useSchedulesStore';
 interface SocialBufferStatsProps {
   className?: string;
   showDetails?: boolean;
-  children?: React.ReactNode;
-  style?: React.CSSProperties;
-  onClick?: (e: any) => void;
-  onChange?: (e: any) => void; }
+}
 
 interface StatCardProps {
   title: string;
@@ -25,9 +36,11 @@ interface StatCardProps {
   bgColor: string;
   borderColor: string;
   format?: 'number' | 'percentage' | 'currency';
-  delay?: number; }
+  delay?: number;
+}
 
-const StatCard: React.FC<StatCardProps> = ({ title,
+const StatCard: React.FC<StatCardProps> = ({
+  title,
   value,
   previousValue,
   icon,
@@ -36,7 +49,7 @@ const StatCard: React.FC<StatCardProps> = ({ title,
   borderColor,
   format = 'number',
   delay = 0
-   }) => {
+}) => {
   const getFormattedValue = (val: number) => {
     switch (format) {
       case 'percentage':
@@ -45,8 +58,8 @@ const StatCard: React.FC<StatCardProps> = ({ title,
         return `R$ ${val.toLocaleString('pt-BR')}`;
       default:
         return val.toLocaleString('pt-BR');
-
-    } ;
+    }
+  };
 
   const getTrend = () => {
     if (!previousValue) return null;
@@ -54,63 +67,67 @@ const StatCard: React.FC<StatCardProps> = ({ title,
     return {
       value: Math.abs(change),
       direction: change > 0 ? 'up' : 'down',
-      isPositive: change > 0};
-};
+      isPositive: change > 0
+    };
+  };
 
   const trend = getTrend();
 
   return (
-        <>
-      <Animated />
-      <Card className={`p-6 border ${borderColor} ${bgColor} hover:shadow-md transition-shadow`} />
-        <div className=" ">$2</div><div className=" ">$2</div><p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+    <Animated delay={delay}>
+      <Card className={`p-6 border ${borderColor} ${bgColor} hover:shadow-md transition-shadow`}>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
             <AnimatedCounter
-              value={ value }
-              className={`text-2xl font-bold ${color} `}
-  >
-          {trend && (
+              value={value}
+              className={`text-2xl font-bold ${color}`}
+            />
+            {trend && (
               <div className={`flex items-center mt-2 text-sm ${
                 trend.isPositive ? 'text-green-600' : 'text-red-600'
-              } `}>
-           
-        </div>{trend.direction === 'up' ? (
+              }`}>
+                {trend.direction === 'up' ? (
                   <TrendingUp className="w-4 h-4 mr-1" />
                 ) : (
                   <TrendingDown className="w-4 h-4 mr-1" />
                 )}
                 <span>{trend.value.toFixed(1)}% vs período anterior</span>
-      </div>
-    </>
-  )}
+              </div>
+            )}
           </div>
           <div className={`p-3 rounded-lg ${bgColor} ${color}`}>
-           
-        </div>{icon}
-          </div></Card></Animated>);};
+            {icon}
+          </div>
+        </div>
+      </Card>
+    </Animated>
+  );
+};
 
-const SocialBufferStats: React.FC<SocialBufferStatsProps> = ({ className = '',
+const SocialBufferStats: React.FC<SocialBufferStatsProps> = ({ 
+  className = '',
   showDetails = true 
-   }) => {
+}) => {
   const { basicMetrics, platformMetrics, loading } = useAnalyticsStore();
-
   const { accountsStats } = useAccountsStore();
-
   const { postsStats } = usePostsStore();
-
   const { schedulesStats } = useSchedulesStore();
 
   if (loading) {
     return (
-        <>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className} `}>
-      </div>{[...Array(4)].map((_: unknown, i: unknown) => (
-          <Card key={i} className="p-6" />
-            <div className=" ">$2</div><div className=" ">$2</div><div className=" ">$2</div><div className="h-3 bg-gray-200 rounded w-1/3">
-           
-        </div></Card>
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="p-6">
+            <div className="animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+            </div>
+          </Card>
         ))}
-      </div>);
-
+      </div>
+    );
   }
 
   const mainStats = [
@@ -220,66 +237,81 @@ const SocialBufferStats: React.FC<SocialBufferStatsProps> = ({ className = '',
   ];
 
   return (
-        <>
-      <div className={`space-y-6 ${className} `}>
-      </div>{/* Main Stats */}
-      <div className="{(mainStats || []).map((stat: unknown) => (">$2</div>
-      <StatCard key={stat.title} {...stat} / />
-    </>
-  ))}
+    <div className={`space-y-6 ${className}`}>
+      {/* Main Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {mainStats.map((stat) => (
+          <StatCard key={stat.title} {...stat} />
+        ))}
       </div>
 
       {showDetails && (
         <>
           {/* Engagement Stats */}
           <div>
-           
-        </div><h3 className="text-lg font-semibold text-gray-900 mb-4">Métricas de Engajamento</h3>
-            <div className="{(engagementStats || []).map((stat: unknown, index: unknown) => (">$2</div>
-      <StatCard
-                  key={ stat.title }
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Métricas de Engajamento</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {engagementStats.map((stat, index) => (
+                <StatCard
+                  key={stat.title}
                   {...stat}
-                / />
-    </>
-  ))}
+                  delay={400 + index * 100}
+                />
+              ))}
             </div>
+          </div>
 
           {/* Interaction Stats */}
           <div>
-           
-        </div><h3 className="text-lg font-semibold text-gray-900 mb-4">Interações</h3>
-            <div className="{(interactionStats || []).map((stat: unknown, index: unknown) => (">$2</div>
-      <StatCard
-                  key={ stat.title }
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Interações</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {interactionStats.map((stat, index) => (
+                <StatCard
+                  key={stat.title}
                   {...stat}
-                / />
-    </>
-  ))}
+                  delay={800 + index * 100}
+                />
+              ))}
             </div>
+          </div>
 
           {/* Platform Performance */}
-          { platformMetrics && platformMetrics.length > 0 && (
+          {platformMetrics && platformMetrics.length > 0 && (
             <div>
-           
-        </div><h3 className="text-lg font-semibold text-gray-900 mb-4">Performance por Plataforma</h3>
-              <div className="{(platformMetrics || []).map((platform: unknown, index: unknown) => (">$2</div>
-                  <Animated key={platform.platform } />
-                    <Card className="p-4 border border-gray-200" />
-                      <div className=" ">$2</div><h4 className="font-medium text-gray-900 capitalize">{platform.platform}</h4>
-                        <span className="text-sm text-gray-500">{platform.posts_count} posts</span></div><div className=" ">$2</div><div className=" ">$2</div><span className="text-gray-600">Engajamento</span>
-                          <span className="font-medium">{platform.engagement.toLocaleString('pt-BR')}</span></div><div className=" ">$2</div><span className="text-gray-600">Taxa</span>
-                          <span className="font-medium">{platform.engagement_rate.toFixed(1)}%</span></div><Progress
-                          value={ platform.engagement_rate }
-                          max={ 100 }
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance por Plataforma</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {platformMetrics.map((platform, index) => (
+                  <Animated key={platform.platform} delay={1100 + index * 100}>
+                    <Card className="p-4 border border-gray-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-medium text-gray-900 capitalize">{platform.platform}</h4>
+                        <span className="text-sm text-gray-500">{platform.posts_count} posts</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Engajamento</span>
+                          <span className="font-medium">{platform.engagement.toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Taxa</span>
+                          <span className="font-medium">{platform.engagement_rate.toFixed(1)}%</span>
+                        </div>
+                        <ProgressBar
+                          value={platform.engagement_rate}
+                          max={100}
                           className="h-1"
-                        / /></div></Card>
-      </Animated>
-    </>
-  ))}
+                        />
+                      </div>
+                    </Card>
+                  </Animated>
+                ))}
               </div>
+            </div>
           )}
         </>
       )}
-    </div>);};
+    </div>
+  );
+};
 
 export default SocialBufferStats;

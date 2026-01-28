@@ -26,8 +26,8 @@ export const useADSTool = () => {
 
     } finally {
       setLoading(false);
-
-    } , []);
+    }
+  }, []);
 
   return {
     data,

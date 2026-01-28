@@ -1,9 +1,7 @@
 import React from 'react';
-import Card from '@/shared/components/ui/Card';
-import { Badge } from '@/shared/components/ui/Badge';
+import { Card } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
-import { Eye, RefreshCw, Play, Pause } from 'lucide-react';
-import { formatDate, formatCurrency } from '@/shared/utils';
+import { RefreshCw, Eye, Play, Pause } from 'lucide-react';
 
 interface Campaign {
   id: string;
@@ -11,108 +9,121 @@ interface Campaign {
   platform: string;
   status: string;
   budget: number;
-  spend: number;
-  ctr: number; }
+  spent: number;
+  impressions: number;
+  clicks: number;
+}
 
 interface ADSToolTableProps {
   campaigns: Campaign[];
   loading?: boolean;
-  onRefresh???: (e: any) => void;
-  onView??: (e: any) => void;
-  onToggleStatus??: (e: any) => void;
-  children?: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: (e: any) => void;
-  onChange?: (e: any) => void; }
+  onRefresh?: () => void;
+  onView?: (campaign: Campaign) => void;
+  onToggleStatus?: (campaign: Campaign) => void;
+}
 
-export const ADSToolTable: React.FC<ADSToolTableProps> = ({ campaigns,
-  loading,
+export const ADSToolTable: React.FC<ADSToolTableProps> = ({ 
+  campaigns,
+  loading = false,
   onRefresh,
   onView,
   onToggleStatus,
-   }) => {
+}) => {
   const getStatusBadge = (status: string) => {
     const colors: Record<string, string> = {
       active: 'bg-green-100 text-green-800',
       paused: 'bg-yellow-100 text-yellow-800',
       completed: 'bg-blue-100 text-blue-800',
-      draft: 'bg-gray-100 text-gray-800',};
+      draft: 'bg-gray-100 text-gray-800',
+    };
 
-    return colors[status] || 'bg-gray-100 text-gray-800';};
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
 
   const getPlatformBadge = (platform: string) => {
     const colors: Record<string, string> = {
       google: 'bg-red-100 text-red-800',
       linkedin: 'bg-blue-100 text-blue-800',
-      facebook: 'bg-indigo-100 text-indigo-800',};
+      facebook: 'bg-indigo-100 text-indigo-800',
+    };
 
-    return colors[platform.toLowerCase()] || 'bg-gray-100 text-gray-800';};
+    return colors[platform.toLowerCase()] || 'bg-gray-100 text-gray-800';
+  };
 
   return (
-        <>
-      <Card
+    <Card
       title="Campanhas"
-      action={ <Button variant="ghost" size="sm" onClick={onRefresh } />
-      <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''} `} / />
+      action={
+        <Button variant="ghost" size="sm" onClick={onRefresh}>
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
-  }
-  >
-      <div className=" ">$2</div><table className="w-full" />
-          <thead className="backdrop-blur-xl bg-white/10 border-white/20 border-b" />
-            <tr />
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plataforma</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orçamento</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gasto</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CTR</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th></tr></thead>
-          <tbody className="divide-y" />
-            {loading ? (
-              <tr />
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-500" />
-                  Carregando...
+      }
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left py-3 px-4">Nome</th>
+              <th className="text-left py-3 px-4">Plataforma</th>
+              <th className="text-left py-3 px-4">Status</th>
+              <th className="text-left py-3 px-4">Orçamento</th>
+              <th className="text-left py-3 px-4">Gasto</th>
+              <th className="text-left py-3 px-4">Impressões</th>
+              <th className="text-left py-3 px-4">Cliques</th>
+              <th className="text-left py-3 px-4">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaigns.map((campaign) => (
+              <tr key={campaign.id} className="border-b hover:bg-gray-50">
+                <td className="py-3 px-4 font-medium">{campaign.name}</td>
+                <td className="py-3 px-4">
+                  <span className={`px-2 py-1 rounded-full text-xs ${getPlatformBadge(campaign.platform)}`}>
+                    {campaign.platform}
+                  </span>
                 </td>
-      </tr>
-    </>
-  ) : campaigns.length === 0 ? (
-              <tr />
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-500" />
-                  Nenhuma campanha encontrada
+                <td className="py-3 px-4">
+                  <span className={`px-2 py-1 rounded-full text-xs ${getStatusBadge(campaign.status)}`}>
+                    {campaign.status}
+                  </span>
                 </td>
-      </tr>
-    </>
-  ) : (
-              campaigns.map((campaign: unknown) => (
-                <tr key={campaign.id} className="hover:bg-gray-50" />
-                  <td className="px-4 py-3 text-sm font-medium">{campaign.name}</td>
-                  <td className="px-4 py-3" />
-                    <Badge className={getPlatformBadge(campaign.platform) } />
-                      {campaign.platform}
-                    </Badge></td><td className="px-4 py-3" />
-                    <Badge className={getStatusBadge(campaign.status) } />
-                      {campaign.status}
-                    </Badge></td><td className="px-4 py-3 text-sm">{formatCurrency(campaign.budget)}</td>
-                  <td className="px-4 py-3 text-sm">{formatCurrency(campaign.spend)}</td>
-                  <td className="px-4 py-3 text-sm" />
-                    <span className="font-medium">{campaign.ctr}%</span></td><td className="px-4 py-3 text-right" />
-                    <div className=" ">$2</div><Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={ () => onToggleStatus?.(campaign.id)  }>
-                        {campaign.status === 'active' ? (
-                          <Pause className="h-4 w-4" />
-                        ) : (
-                          <Play className="h-4 w-4" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={ () => onView?.(campaign.id)  }>
-                        <Eye className="h-4 w-4" /></Button></div></td></tr>
-              ))
-            )}
-          </tbody></table></div>
-    </Card>);};
+                <td className="py-3 px-4">R$ {campaign.budget.toFixed(2)}</td>
+                <td className="py-3 px-4">R$ {campaign.spent.toFixed(2)}</td>
+                <td className="py-3 px-4">{campaign.impressions.toLocaleString()}</td>
+                <td className="py-3 px-4">{campaign.clicks.toLocaleString()}</td>
+                <td className="py-3 px-4">
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => onView?.(campaign)}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => onToggleStatus?.(campaign)}>
+                      {campaign.status === 'active' ? (
+                        <Pause className="h-4 w-4" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        {campaigns.length === 0 && !loading && (
+          <div className="text-center py-8 text-gray-500">
+            Nenhuma campanha encontrada
+          </div>
+        )}
+        
+        {loading && (
+          <div className="text-center py-8 text-gray-500">
+            Carregando campanhas...
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};
+
+export default ADSToolTable;

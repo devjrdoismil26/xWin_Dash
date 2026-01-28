@@ -276,5 +276,5 @@ export interface LeadData {
 
 export interface LeadFiltersExtended extends LeadFilters {
   memoizedFilter?: string;
-  handleSearchChange??: (e: any) => void;
+  handleSearchChange?: (e: any) => void;
 }

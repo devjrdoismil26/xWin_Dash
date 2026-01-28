@@ -3,79 +3,43 @@
 // =========================================
 
 import React, { useState, Suspense } from 'react';
-import { BarChart3, Send, Users, Calendar, Hash, Link as LucideLink, Image, TrendingUp, Play } from 'lucide-react';
+import { 
+  BarChart3, 
+  Send, 
+  Users, 
+  Calendar, 
+  Hash, 
+  Link as LucideLink, 
+  Image,
+  TrendingUp,
+  Play
+} from 'lucide-react';
 import AppLayout from '@/layouts/AppLayout';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import { Link } from '@inertiajs/react';
 import PageLayout from '@/layouts/PageLayout';
-import Card from '@/shared/components/ui/Card';
-import Button from '@/shared/components/ui/Button';
-import { LoadingSpinner, LoadingSkeleton, TableLoadingSkeleton } from '@/shared/components/ui/LoadingStates';
-import { AnimatedCounter, PageTransition, Animated } from '@/shared/components/ui/AdvancedAnimations';
-import { ResponsiveGrid, ResponsiveContainer, ShowOn } from '@/shared/components/ui/ResponsiveSystem';
-import { Progress, CircularProgress, OperationProgress } from '@/shared/components/ui/AdvancedProgress';
-import { EmptyState } from '@/shared/components/ui/EmptyState';
-import ErrorState from '@/shared/components/ui/ErrorState';
-import Tooltip from '@/shared/components/ui/Tooltip';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import { LoadingSpinner, LoadingSkeleton, TableLoadingSkeleton } from '@/components/ui/LoadingStates';
+import { AnimatedCounter, PageTransition, Animated } from '@/components/ui/AdvancedAnimations';
+import { ResponsiveGrid, ResponsiveContainer, ShowOn } from '@/components/ui/ResponsiveSystem';
+import { ProgressBar, CircularProgress, OperationProgress } from '@/components/ui/ProgressBar';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ErrorState } from '@/components/ui/ErrorState';
+import Tooltip from '@/components/ui/Tooltip';
 
 // Lazy Loading Components
-const AdvancedSocialBufferDashboard = React.lazy(() => import('../shared/components/AdvancedSocialBufferDashboard'));
-
-const SocialBufferIntegrationTest = React.lazy(() => import('../shared/components/SocialBufferIntegrationTest'));
+const AdvancedSocialBufferDashboard = React.lazy(() => import('../components/AdvancedSocialBufferDashboard'));
+const SocialBufferIntegrationTest = React.lazy(() => import('../components/SocialBufferIntegrationTest'));
 
 // =========================================
 // COMPONENTE PRINCIPAL
 // =========================================
 
-const SocialBufferIndexPage: React.FC<{ auth?: string }> = ({ auth    }) => {
+const SocialBufferIndexPage: React.FC<{ auth?: any }> = ({ auth }) => {
   const [useAdvancedDashboard, setUseAdvancedDashboard] = useState(false);
-
   const [activeView, setActiveView] = useState('overview');
-
   const [showIntegrationTest, setShowIntegrationTest] = useState(false);
-
-  const [stats, setStats] = useState([
-    { label: 'Posts Publicados', value: 0, change: '+0%', color: 'text-green-600' },
-    { label: 'Engajamento Total', value: 0, change: '+0%', color: 'text-blue-600' },
-    { label: 'Alcance Total', value: 0, change: '+0%', color: 'text-purple-600' },
-    { label: 'Contas Conectadas', value: 0, change: '+0', color: 'text-orange-600' }
-  ]);
-
-  const [loading, setLoading] = useState(true);
-
-  // FE-005: Carregar stats reais da API
-  React.useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const { apiClient } = await import('@/services');
-
-        // Buscar dados reais de posts, accounts, etc.
-        const [postsRes, accountsRes] = await Promise.all([
-          apiClient.get('/social-buffer/posts').catch(() => ({ data: { data: [] } )),
-          apiClient.get('/social-buffer/accounts').catch(() => ({ data: { data: [] } ))
-        ]);
-
-        const posts = postsRes.data?.data || [];
-        const accounts = accountsRes.data?.data || [];
-
-        setStats([
-          { label: 'Posts Publicados', value: posts.length, change: '+12%', color: 'text-green-600' },
-          { label: 'Engajamento Total', value: 0, change: '+8%', color: 'text-blue-600' },
-          { label: 'Alcance Total', value: 0, change: '+15%', color: 'text-purple-600' },
-          { label: 'Contas Conectadas', value: accounts.length, change: `+${accounts.length}`, color: 'text-orange-600' }
-        ]);
-
-      } catch (err) {
-        console.error('Erro ao carregar stats:', err);
-
-      } finally {
-        setLoading(false);
-
-      } ;
-
-    loadStats();
-
-  }, []);
 
   const features = [
     {
@@ -136,6 +100,13 @@ const SocialBufferIndexPage: React.FC<{ auth?: string }> = ({ auth    }) => {
     }
   ];
 
+  const stats = [
+    { label: 'Posts Publicados', value: 1247, change: '+12%', color: 'text-green-600' },
+    { label: 'Engajamento Total', value: 45678, change: '+8%', color: 'text-blue-600' },
+    { label: 'Alcance Total', value: 234567, change: '+15%', color: 'text-purple-600' },
+    { label: 'Contas Conectadas', value: 8, change: '+2', color: 'text-orange-600' }
+  ];
+
   const recentActivity = [
     { action: 'Post publicado no Instagram', time: '2 min atrás', platform: 'Instagram' },
     { action: 'Agendamento criado para Twitter', time: '15 min atrás', platform: 'Twitter' },
@@ -144,19 +115,23 @@ const SocialBufferIndexPage: React.FC<{ auth?: string }> = ({ auth    }) => {
   ];
 
   return (
-        <>
-      <AuthenticatedLayout user={ auth?.user } />
-      <AppLayout />
-        <PageLayout />
-          <div className="{/* Header */}">$2</div>
-            <div className=" ">$2</div><div>
-           
-        </div><h1 className="text-3xl font-bold text-gray-900">Social Buffer</h1>
-                <p className="text-gray-600 mt-2" />
+    <AuthenticatedLayout user={auth?.user}>
+      <AppLayout>
+        <PageLayout>
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Social Buffer</h1>
+                <p className="text-gray-600 mt-2">
                   Gerencie suas redes sociais de forma inteligente e eficiente
-                </p></div><div className=" ">$2</div><Button
+                </p>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button
                   variant="outline"
-                  onClick={ () => setShowIntegrationTest(!showIntegrationTest) }
+                  onClick={() => setShowIntegrationTest(!showIntegrationTest)}
                   className="flex items-center gap-2"
                 >
                   <Play className="w-4 h-4" />
@@ -164,85 +139,113 @@ const SocialBufferIndexPage: React.FC<{ auth?: string }> = ({ auth    }) => {
                 </Button>
                 
                 <Button
-                  variant={ useAdvancedDashboard ? "default" : "outline" }
-                  onClick={ () => setUseAdvancedDashboard(!useAdvancedDashboard) }
+                  variant={useAdvancedDashboard ? "default" : "outline"}
+                  onClick={() => setUseAdvancedDashboard(!useAdvancedDashboard)}
                   className="flex items-center gap-2"
                 >
                   <BarChart3 className="w-4 h-4" />
                   {useAdvancedDashboard ? 'Dashboard Simples' : 'Dashboard Avançado'}
                 </Button>
               </div>
+            </div>
 
             {/* Stats Cards */}
-            <ResponsiveGrid columns={ sm: 2, md: 4 } gap={ 6 } />
-              { (stats || []).map((stat: unknown, index: unknown) => (
-                <Animated key={stat.label } />
-                  <Card className="p-6" />
-                    <div className=" ">$2</div><div>
-           
-        </div><p className="text-sm font-medium text-gray-600">{stat.label}</p>
+            <ResponsiveGrid columns={{ sm: 2, md: 4 }} gap={6}>
+              {stats.map((stat, index) => (
+                <Animated key={stat.label} delay={index * 100}>
+                  <Card className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">{stat.label}</p>
                         <AnimatedCounter
-                          value={ stat.value }
-                          className={`text-2xl font-bold ${stat.color} `}
-                        / /></div><div className=" ">$2</div><span className={`text-sm font-medium ${stat.color} `}>
-           
-        </span>{stat.change}
-                        </span></div></Card>
-      </Animated>
-    </>
-  ))}
+                          value={stat.value}
+                          className={`text-2xl font-bold ${stat.color}`}
+                        />
+                      </div>
+                      <div className="text-right">
+                        <span className={`text-sm font-medium ${stat.color}`}>
+                          {stat.change}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                </Animated>
+              ))}
             </ResponsiveGrid>
 
             {/* Dashboard Toggle */}
-            { useAdvancedDashboard ? (
-              <Suspense fallback={ <LoadingSkeleton />  }>
-                <AdvancedSocialBufferDashboard / />
+            {useAdvancedDashboard ? (
+              <Suspense fallback={<LoadingSkeleton />}>
+                <AdvancedSocialBufferDashboard />
               </Suspense>
             ) : (
-              <div className="{/* Features Grid */}">$2</div>
-                <div className=" ">$2</div><Card className="p-6" />
-                    <h2 className="text-xl font-semibold text-gray-900 mb-6" />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Features Grid */}
+                <div className="lg:col-span-2">
+                  <Card className="p-6">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">
                       Funcionalidades Principais
                     </h2>
-                    <ResponsiveGrid columns={ sm: 2 } gap={ 4 } />
-                      { (features || []).map((feature: unknown, index: unknown) => (
-                        <Animated key={feature.title } />
-                          <Link href={ feature.href } />
-                            <Card className={`p-4 hover:shadow-md transition-shadow cursor-pointer ${feature.color} `} />
-                              <div className="{feature.icon}">$2</div>
+                    <ResponsiveGrid columns={{ sm: 2 }} gap={4}>
+                      {features.map((feature, index) => (
+                        <Animated key={feature.title} delay={index * 100}>
+                          <Link href={feature.href}>
+                            <Card className={`p-4 hover:shadow-md transition-shadow cursor-pointer ${feature.color}`}>
+                              <div className="flex items-center gap-3">
+                                {feature.icon}
                                 <div>
-           
-        </div><h3 className="font-medium text-gray-900">{feature.title}</h3>
-                                  <p className="text-sm text-gray-600">{feature.description}</p></div></Card></Link></Animated>
+                                  <h3 className="font-medium text-gray-900">{feature.title}</h3>
+                                  <p className="text-sm text-gray-600">{feature.description}</p>
+                                </div>
+                              </div>
+                            </Card>
+                          </Link>
+                        </Animated>
                       ))}
-                    </ResponsiveGrid></Card></div>
+                    </ResponsiveGrid>
+                  </Card>
+                </div>
 
                 {/* Recent Activity */}
                 <div>
-           
-        </div><Card className="p-6" />
-                    <h2 className="text-xl font-semibold text-gray-900 mb-6" />
+                  <Card className="p-6">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">
                       Atividade Recente
                     </h2>
-                    <div className="{ (recentActivity || []).map((activity: unknown, index: unknown) => (">$2</div>
-                        <Animated key={index } />
-                          <div className=" ">$2</div><div className=" ">$2</div><div className=" ">$2</div><p className="text-sm text-gray-900">{activity.action}</p>
-                              <div className=" ">$2</div><span className="text-xs text-gray-500">{activity.time}</span>
-                                <span className="{activity.platform}">$2</span>
-                                </span></div></div>
-      </Animated>
-    </>
-  ))}
-                    </div></Card></div>
+                    <div className="space-y-4">
+                      {recentActivity.map((activity, index) => (
+                        <Animated key={index} delay={index * 100}>
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-900">{activity.action}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs text-gray-500">{activity.time}</span>
+                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                  {activity.platform}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </Animated>
+                      ))}
+                    </div>
+                  </Card>
+                </div>
+              </div>
             )}
 
             {/* Integration Test */}
-            { showIntegrationTest && (
-              <Suspense fallback={ <LoadingSkeleton />  }>
-                <SocialBufferIntegrationTest / />
+            {showIntegrationTest && (
+              <Suspense fallback={<LoadingSkeleton />}>
+                <SocialBufferIntegrationTest />
               </Suspense>
             )}
-          </div></PageLayout></AppLayout>
-    </AuthenticatedLayout>);};
+          </div>
+        </PageLayout>
+      </AppLayout>
+    </AuthenticatedLayout>
+  );
+};
 
 export default SocialBufferIndexPage;

@@ -37,8 +37,8 @@ export function useValidatedApi<T>(schema: z.ZodSchema<T>) {
       throw err;
     } finally {
       setLoading(false);
-
-    } , []);
+    }
+  }, []);
 
   const reset = useCallback(() => {
     setData(null);

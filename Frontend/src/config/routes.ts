@@ -57,8 +57,8 @@ const Aura = lazy(() => import("@/modules/Aura")) as LazyComponent;
 const SocialBuffer = lazy(
   () => import("@/modules/SocialBuffer"),
 ) as LazyComponent;
-const MediaLibrary = lazy(
-  () => import("@/modules/MediaLibrary"),
+const Media = lazy(
+  () => import("@/modules/Media"),
 ) as LazyComponent;
 const Settings = lazy(() => import("@/modules/Settings")) as LazyComponent;
 
@@ -214,7 +214,7 @@ export const routesConfig: RouteConfig[] = [
   },
   {
     path: "/media",
-    component: MediaLibrary,
+    component: Media,
     name: "Biblioteca",
     icon: "image",
     requiresAuth: true,

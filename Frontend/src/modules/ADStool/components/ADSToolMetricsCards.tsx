@@ -1,70 +1,70 @@
 import React from 'react';
-import Card from '@/shared/components/ui/Card';
-import { TrendingUp, DollarSign, MousePointer, Target, LucideIcon } from 'lucide-react';
+import { Card } from '@/shared/components/ui/Card';
+import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
 
 interface ADSToolMetricsCardsProps {
-  metrics: {
-total_campaigns: number;
-  active_campaigns: number;
-  total_spend: number;
-  total_conversions: number;
-  children?: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: (e: any) => void;
-  onChange?: (e: any) => void; };
-
+  metrics?: {
+    impressions?: number;
+    clicks?: number;
+    conversions?: number;
+    spend?: number;
+  };
   loading?: boolean;
 }
 
-interface MetricCard {
-  title: string;
-  value: string | number;
-  icon: LucideIcon;
-  color: string; }
-
-export const ADSToolMetricsCards: React.FC<ADSToolMetricsCardsProps> = ({ metrics, loading    }) => {
-  const cards: MetricCard[] = [
+export const ADSToolMetricsCards: React.FC<ADSToolMetricsCardsProps> = ({ 
+  metrics = {},
+  loading = false 
+}) => {
+  const cards = [
     {
-      title: 'Total de Campanhas',
-      value: metrics.total_campaigns,
+      title: 'Impressões',
+      value: metrics.impressions?.toLocaleString() || '0',
       icon: TrendingUp,
       color: 'bg-blue-500',
     },
     {
-      title: 'Campanhas Ativas',
-      value: metrics.active_campaigns,
-      icon: Target,
+      title: 'Cliques',
+      value: metrics.clicks?.toLocaleString() || '0',
+      icon: Users,
       color: 'bg-green-500',
     },
     {
-      title: 'Gasto Total',
-      value: `R$ ${metrics.total_spend.toLocaleString('pt-BR')}`,
-      icon: DollarSign,
+      title: 'Conversões',
+      value: metrics.conversions?.toLocaleString() || '0',
+      icon: Target,
       color: 'bg-purple-500',
     },
     {
-      title: 'Conversões',
-      value: metrics.total_conversions,
-      icon: MousePointer,
+      title: 'Gasto',
+      value: `R$ ${(metrics.spend || 0).toFixed(2)}`,
+      icon: DollarSign,
       color: 'bg-yellow-500',
     },
   ];
 
   return (
-            <div className="{ cards.map((card: unknown) => {">$2</div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card) => {
         const IconComponent = card.icon;
         return (
-        <>
-      <Card key={card.title } />
-      <div className=" ">$2</div><div>
-           
-        </div><p className="text-sm text-gray-500">{card.title}</p>
-                <p className="text-2xl font-bold mt-1" />
+          <Card key={card.title}>
+            <div className="flex items-center justify-between p-4">
+              <div>
+                <p className="text-sm text-gray-500">{card.title}</p>
+                <p className="text-2xl font-bold mt-1">
                   {loading ? '...' : card.value}
-                </p></div><div className={`p-3 rounded-lg ${card.color} bg-opacity-10`}>
-           
-        </div><IconComponent className={`h-6 w-6 ${card.color.replace('bg-', 'text-')} `} / /></div></Card>);
-
+                </p>
+              </div>
+              <div className={`p-3 rounded-lg ${card.color} bg-opacity-10`}>
+                <IconComponent className={`h-6 w-6 ${card.color.replace('bg-', 'text-')}`} />
+              </div>
+            </div>
+          </Card>
+        );
       })}
-    </div>);};
+    </div>
+  );
+};
+
+export default ADSToolMetricsCards;

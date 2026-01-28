@@ -28,10 +28,18 @@ interface CreateEditProps {
 const CreateEdit: React.FC<CreateEditProps> = ({ campaign, isEditing = false    }) => {
   const pageTitle = isEditing ? `Editar Campanha: ${campaign?.name || ''}` : 'Criar Nova Campanha';
   return (
-        <>
+    <>
       <AuthenticatedLayout />
-      <Head title={pageTitle} / />
-      <PageLayout />
-        <EnhancedCampaignForm campaign={campaign} onSuccess={() => {} onCancel={() => {} /></PageLayout></AuthenticatedLayout>);};
+      <Head title={pageTitle} />
+      <PageLayout>
+        <EnhancedCampaignForm 
+          campaign={campaign} 
+          onSuccess={() => {}} 
+          onCancel={() => {}} 
+        />
+      </PageLayout>
+    </>
+  );
+};
 
 export default CreateEdit;
