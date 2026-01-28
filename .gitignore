@@ -18,6 +18,9 @@ public/build/
 public/hot
 public/storage
 
+# Backups
+backup/
+
 # Node modules
 node_modules/
 npm-debug.log
